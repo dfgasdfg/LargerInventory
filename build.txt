@@ -1,0 +1,7 @@
+displayName = LargerInventory
+author = silvermoon
+version = 1.0.0.8
+hideCode = true
+hideResources = true
+includeSource = true
+buildIgnore = *.csproj, *.user, obj\*, bin\*, .vs\*, *.zip, *.7z, *.txt
