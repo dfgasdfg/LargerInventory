@@ -185,5 +185,14 @@ namespace LargerInventory
             }
             return list.ToArray();
         }
+        internal Item[] GetItemForBuySell()
+        {
+            List<Item> result = new();
+            foreach (Page p in pages)
+            {
+                result.AddRange(p.Inventory[0..54]);
+            }
+            return result.ToArray();
+        }
     }
 }

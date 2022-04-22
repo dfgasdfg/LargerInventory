@@ -25,7 +25,7 @@ namespace LargerInventory
             UpdateArmorSet,
             FindRecipe,
             PickAmmo,
-            GrabItems,
+            GetItem,
             Equips,
             GhostHurt,
             GhostHeal,
@@ -34,12 +34,13 @@ namespace LargerInventory
             QuickMana,
             CraftItem,
             AromorSet,
+            BuyItem,
+            SellItem,
             IOException,
             NullReferenceException,
             FileLoadException,
             FileNotFoundException,
-
-            Uncategorized
+            Uncategorized,
         }
         internal static void CatchExptionForPlayer(Player player, ExceptionFlag flag, Exception exception)
         {
@@ -51,7 +52,7 @@ namespace LargerInventory
             {
                 PlayerException.Add(player, new List<(ExceptionFlag, Exception)>() { (flag, exception) });
             }
-            CatchException(exception);
+            CatchException(flag, exception);
         }
         internal static bool TryFindNewestException(Player player, out (ExceptionFlag, Exception) newest)
         {
@@ -151,9 +152,9 @@ namespace LargerInventory
                             Color.Red);
                         break;
                     }
-                case ExceptionFlag.GrabItems:
+                case ExceptionFlag.GetItem:
                     {
-                        Main.NewText($"{LargerInventory.Instance.DisplayName}'s Self-check defense mechanism caught an exception on try attempt to implement grab items enhancements.\n" +
+                        Main.NewText($"{LargerInventory.Instance.DisplayName}'s Self-check defense mechanism caught an exception on try attempt to implement get item enhancements.\n" +
                             $" This may cause the mod to not function properly.\n" +
                             $" See the error log for details",
                             Color.Red);
@@ -186,6 +187,15 @@ namespace LargerInventory
                             Color.Red);
                         break;
                     }
+                case ExceptionFlag.BuyItem:
+                case ExceptionFlag.SellItem:
+                    {
+                        Main.NewText($"{LargerInventory.Instance.DisplayName}'s Self-check defense mechanism caught an exception on try attempt to implement cross page use coins or tokens.\n" +
+                            $" This may cause the mod to not function properly.\n" +
+                            $" See the error log for details",
+                            Color.Red);
+                        break;
+                    }
                 default:
                     {
                         Main.NewText($"An other types of exceptions exception was caught by {LargerInventory.Instance.DisplayName}'s Self-check defense mechanism.\n" +
@@ -197,7 +207,7 @@ namespace LargerInventory
             Main.NewText("To avoid game crashes, related settings and functions have been turned off." +
                 " But that doesn't mean bugs will disappear or never appear again." +
                 " Please check according to the prompt information to see if there are other modules with functions related to the prompt exception type, which may conflict with each other." +
-                " For feedback, please bring the error log file stored in the C:/Users/account name/Documents/My Games/Terraria/ModLoader/Beta/Logs directory (please provide client.log for stand-alone mode exceptions, and server.log for online mode exceptions)");
+                " For feedback, please bring the error log file stored in the C:/Users/account name/Documents/My Games/Terraria/tModLoader/Logs directory (please provide client.log for stand-alone mode exceptions, and server.log for online mode exceptions)");
         }
         internal static void CatchException(Exception exception)
         {

@@ -93,7 +93,7 @@ namespace LargerInventory
                 for (int i = 0; i < array.Length; i++)
                 {
                     item = array[i];
-                    if (item.stack > 0 && !item.favorited)
+                    if (item.stack > 0)
                     {
                         if (dictionary.ContainsKey(item.netID))
                         {
@@ -338,7 +338,7 @@ namespace LargerInventory
                 }
                 for (int j = 0; j < array.Length; j++)
                 {
-                    if (array[j].favorited)
+                    if (!Config.IgnoreFavouritesWhenCraftingItems && array[j].favorited)
                     {
                         continue;
                     }

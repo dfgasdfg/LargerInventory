@@ -22,38 +22,46 @@ Mods: {
 		ConfigLabel:{
 			TitilLabel:多背包设置页面
 			DefaultNumberOfBackpacks:玩家默认具有的背包数
+			AdditionalItemsAdded:游商开始有概率售卖一些特殊商品
 			EnableRecipeEnhancement:启用跨页面合成
 			IgnoreFavouritesWhenCraftingItems:跨页面合成时无视收藏
 			EnableQuickUse:启用跨页面快捷使用
 			IgnoreFavouritesWhenQuickUseItems:跨页面快捷使用无视收藏
 			EnableInventoryEnhancement:跨页面更新背包物品
 			EnableAmmoPickEnhancement:跨页面使用弹药
+			PickAmmoFromSpeicalChest:选取弹药时额外增加选取对象
 			EnableArmorEnhancement:启用跨页面盔甲
 			EnableAccessoryEnhancement:启用跨页面饰品
 			EnableDecorationEnhancement:启用跨页面装饰
 			EnableCrossPagePickup:启用跨页面捡拾
+			EnableCrosspageUseCoinsOrTokens:跨页面支付
 			UIHorizontalOffset:UI横向偏移
 			UIVerticalOffset:UI纵向偏移
 			HideUIAlways:隐藏UI模块
-			EnableCrossPageStack:拾取时尝试跨页面堆叠
+			EnableModIntroduceCraft:允许合成模组介绍
+			EnableScrollPage:允许滚动翻页
 		}
 		ConfigTooltip:{
 			TililTooltip:多背包模组的设置页面，用于设置各种细节
 			DefaultNumberOfBackpacks:玩家初建存档或首次加载mod时具有的默认背包数
+			AdditionalItemsAdded:游商将有概率出售背包扩容许可证或背包减负凭证
 			EnableRecipeEnhancement:玩家合成物品时允许使用其他页面的材料
 			IgnoreFavouritesWhenCraftingItems:启用跨页面合成后合成不再选择被收藏的物品
 			EnableQuickUse:玩家快捷治疗生命魔力或快捷buff时可以使用其他页面的物品
 			IgnoreFavouritesWhenQuickUseItems:启用跨页面快捷使用后不再选择被收藏的物品
 			EnableInventoryEnhancement:其他页面背包的物品也会进行更新
 			EnableAmmoPickEnhancement:其他页面的弹药也会被使用（优先选择当前页面）
+			PickAmmoFromSpeicalChest:保险箱，猪猪储存罐，卫兵熔炉，虚空包里的弹药也将纳入取用弹药范围
 			EnableArmorEnhancement:其他页面的盔甲也将提供效果和套装奖励（大部分原版套装奖励可叠加）
 			EnableAccessoryEnhancement:其他页面的饰品也将提供效果（翅膀优先选择当前页面，如不存在选择最后页面）
 			EnableDecorationEnhancement:其他页面的时装也将提供效果（仅限非视觉效果）
-			EnableCrossPagePickup:当前背包无空位时触碰物品将收纳至其余页面（无吸取效果）
+			EnableCrossPagePickup:拾取物品时可直接放入其他背包，若其他背包有相同物品且可堆叠则会优先堆叠至该背包(重写了拾取逻辑导致物品堆放顺序与原版略有差异)
+			EnableCrosspageUseCoinsOrTokens:进行交易时可用使用其他背包页面进行支付
 			UIHorizontalOffset:背包翻页UI在屏幕中位置自左侧横向偏移值(最大为1，即100%屏幕宽度)
 			UIVerticalOffset:背包翻页UI在屏幕中位置自上侧纵向偏移值(最大为1，即100%屏幕高度)
 			HideUIAlways:背包UI被隐藏，无论其他设置。切换背包等功能仅由热键支持
-			EnableCrossPageStack:拾取物品时若其他页面存在相同物品则会优先堆叠，当拾取物品过多使可能造成卡顿
+			EnableModIntroduceCraft:使你能在没有模组介绍是合成模组介绍
+			EnableScrollPage:当鼠标在背包上可以滚动鼠标滚轮翻页
 		}
 	}
 }

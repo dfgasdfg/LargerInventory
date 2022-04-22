@@ -25,20 +25,25 @@ Mods: {
 		ConfigLabel:{
 			DefaultNumberOfBackpacks: The number of backpacks the player has by default
 			EnableRecipeEnhancement: Enable cross-page compositing
+			AdditionalItemsAdded: Travelers have a chance to sell some special items
 			IgnoreFavouritesWhenCraftingItems: Ignore Favorites when crafting across pages
 			EnableQuickUse: Enable cross-page quick use
 			IgnoreFavouritesWhenQuickUseItems: Ignore favorites for cross-page shortcuts
 			EnableInventoryEnhancement: Update inventory items across pages
 			EnableAmmoPickEnhancement: Use ammo across pages
+			PickAmmoFromSpeicalChest: Adds an additional selection object when picking ammo
 			EnableArmorEnhancement: Enable Armor across pages
+			EnableCrosspageUseCoinsOrTokens: Cross-page payments
 			EnableAccessoryEnhancement: Enable cross-page accessories
 			EnableDecorationEnhancement: Enable cross-page decoration
 			EnableCrossPagePickup: Enable cross-page pickup
-			EnableCrossPageStack: Enable cross-page stack first
+			EnableModIntroduceCraft: Enable ModIntroduce Craft
+			EnableScrollPage: Enable scroll page turning
 		}
 		ConfigTooltip:{
 			DefaultNumberOfBackpacks: The default number of backpacks a player has when they first create a save or load a mod for the first time
 			EnableRecipeEnhancement: Players are allowed to use materials from other pages when synthesizing items
+			AdditionalItemsAdded: Travelers will have a chance to sell BackpackExpansionLicense or BurdenReliefCertificate
 			IgnoreFavouritesWhenCraftingItems: Crafting no longer selects favorited items after enabling cross-page crafting
 			EnableQuickUse: Players can use items from other pages when quickly healing life mana or quick buffs
 			IgnoreFavouritesWhenQuickUseItems: No longer select favorite items after enabling cross-page quick use
@@ -47,11 +52,12 @@ Mods: {
 			EnableArmorEnhancement: Armor on other pages will also provide effects and set bonuses (most vanilla set bonuses are stackable)
 			EnableAccessoryEnhancement: Accessories on other pages will also provide effects (wings will give priority to the current page, if not, select the last page)
 			EnableDecorationEnhancement: Fashion on other pages will also provide effects (non-visual effects only)
-			EnableCrossPagePickup: When there is no space in the current backpack, the touched items will be stored in the other pages (no suction effect)
+			EnableCrossPagePickup: When you pick up an item, it can be put into other page directly. If there is a same item whick can be stacked in other page, it will be stacked there first (Due to totally rewriting the logic of picking items, there will be a little difference between vanilla)
 			UIHorizontalOffset: The horizontal offset value of the backpack page turning UI from the left side of the screen (the maximum is 1, that is, 100% of the screen width)
 			UIVerticalOffset: The vertical offset value of the backpack page turning UI from the upper side of the screen (the maximum is 1, that is, 100% of the screen height)
 			HideUIAlways: Backpack UI is hidden regardless of other settings. Functions like switching backpacks are only supported by hotkeys
-			EnableCrossPageStack: Stack items in other pages first 
+			EnableModIntroduceCraft: Enable creating ModIntroduce Item when you don't have a ModIntroduce
+			EnableScrollPage: Enable using the scroll wheel to turn pages
 		}
 	}
 }

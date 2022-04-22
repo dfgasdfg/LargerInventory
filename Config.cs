@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LargerInventory.UI;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -16,6 +17,10 @@ namespace LargerInventory
         /// 默认背包页数
         /// </summary>
         internal static int DefaultNumberOfBackpacks = 10;
+        /// <summary>
+        /// 增删页面物品追加
+        /// </summary>
+        internal static bool AdditionalItemsAdded = true;
         /// <summary>
         /// 跨页面合成
         /// </summary>
@@ -41,6 +46,10 @@ namespace LargerInventory
         /// </summary>
         internal static bool EnableAmmoPickEnhancement = false;
         /// <summary>
+        /// 支取来自飞猪存钱罐等箱子的弹药
+        /// </summary>
+        internal static bool PickAmmoFromSpeicalChest = false;
+        /// <summary>
         /// 跨页面盔甲生效
         /// </summary>
         internal static bool EnableArmorEnhancement = false;
@@ -56,12 +65,18 @@ namespace LargerInventory
         /// 跨页面捡拾
         /// </summary>
         internal static bool EnableCrossPagePickup = false;
-
         /// <summary>
-        /// 紫幽修改
-        /// 尝试拾取时跨页面堆叠
+        /// 跨页面购买销售
         /// </summary>
-        internal static bool EnableCrossPageStack = false;
+        internal static bool EnableCrosspageUseCoinsOrTokens = false;
+        /// <summary>
+        /// 模组介绍合成
+        /// </summary>
+        internal static bool EnableModIntroduceCraft = true;
+        /// <summary>
+        /// 滚轮翻页
+        /// </summary>
+        internal static bool EnableScrollPage = true;
         public override ConfigScope Mode => ConfigScope.ClientSide;
         
         [Slider]
@@ -73,6 +88,13 @@ namespace LargerInventory
         [Label("$Mods.LargerInventory.ConfigLabel.DefaultNumberOfBackpacks")]
         [Tooltip("$Mods.LargerInventory.ConfigTooltip.DefaultNumberOfBackpacks")]
         public int defaultNumberOfBackpacks = 10;
+
+        [DefaultValue(true)]
+        [ReloadRequired]
+        [BackgroundColor(65, 179, 73)]
+        [Label("$Mods.LargerInventory.ConfigLabel.AdditionalItemsAdded")]
+        [Tooltip("$Mods.LargerInventory.ConfigTooltip.AdditionalItemsAdded")]
+        public bool additionalItemsAdded;
 
         [DefaultValue(false)]
         [BackgroundColor(65, 179, 73)]
@@ -112,6 +134,12 @@ namespace LargerInventory
 
         [DefaultValue(false)]
         [BackgroundColor(65, 179, 73)]
+        [Label("$Mods.LargerInventory.ConfigLabel.PickAmmoFromSpeicalChest")]
+        [Tooltip("$Mods.LargerInventory.ConfigTooltip.PickAmmoFromSpeicalChest")]
+        public bool pickAmmoFromSpeicalChest;
+
+        [DefaultValue(false)]
+        [BackgroundColor(65, 179, 73)]
         [Label("$Mods.LargerInventory.ConfigLabel.EnableArmorEnhancement")]
         [Tooltip("$Mods.LargerInventory.ConfigTooltip.EnableArmorEnhancement")]
         public bool enableArmorEnhancement;
@@ -134,9 +162,16 @@ namespace LargerInventory
         [Tooltip("$Mods.LargerInventory.ConfigTooltip.EnableCrossPagePickup")]
         public bool enableCrossPagePickup;
 
+        [DefaultValue(false)]
+        [BackgroundColor(65, 179, 73)]
+        [Label("$Mods.LargerInventory.ConfigLabel.EnableCrosspageUseCoinsOrTokens")]
+        [Tooltip("$Mods.LargerInventory.ConfigTooltip.EnableCrosspageUseCoinsOrTokens")]
+        public bool enableCrosspageUseCoinsOrTokens;
+
         [Increment(0.005f)]
         [Range(0f, 1f)]
         [DefaultValue(0.180f)]
+        [BackgroundColor(65, 179, 73)]
         [Label("$Mods.LargerInventory.ConfigLabel.UIHorizontalOffset")]
         [Tooltip("$Mods.LargerInventory.ConfigTooltip.UIHorizontalOffset")]
         [Slider]
@@ -145,6 +180,7 @@ namespace LargerInventory
         [Increment(0.005f)]
         [Range(0f, 1f)]
         [DefaultValue(0.365f)]
+        [BackgroundColor(65, 179, 73)]
         [Label("$Mods.LargerInventory.ConfigLabel.UIVerticalOffset")]
         [Tooltip("$Mods.LargerInventory.ConfigTooltip.UIVerticalOffset")]
         [Slider]
@@ -156,12 +192,17 @@ namespace LargerInventory
         [Tooltip("$Mods.LargerInventory.ConfigTooltip.HideUIAlways")]
         public bool hideuialways;
 
-        //改
-        [DefaultValue(false)]
+        [DefaultValue(true)]
         [BackgroundColor(65, 179, 73)]
-        [Label("$Mods.LargerInventory.ConfigLabel.EnableCrossPageStack")]
-        [Tooltip("$Mods.LargerInventory.ConfigTooltip.EnableCrossPageStack")]
-        public bool enableCrossPageStack;
+        [Label("$Mods.LargerInventory.ConfigLabel.EnableModIntroduceCraft")]
+        [Tooltip("$Mods.LargerInventory.ConfigTooltip.EnableModIntroduceCraft")]
+        public bool enableModIntroduceCraft;
+
+        [DefaultValue(true)]
+        [BackgroundColor(65, 179, 73)]
+        [Label("$Mods.LargerInventory.ConfigLabel.EnableScrollPage")]
+        [Tooltip("$Mods.LargerInventory.ConfigTooltip.EnableScrollPage")]
+        public bool enableScrollPage;
         public override void OnChanged()
         {
             DefaultNumberOfBackpacks = defaultNumberOfBackpacks;
@@ -171,17 +212,18 @@ namespace LargerInventory
             IgnoreFavouritesWhenQuickUseItems = ignoreFavouritesWhenQuickUseItems;
             EnableInventoryEnhancement = enableInventoryEnhancement;
             EnableAmmoPickEnhancement = enableAmmoPickEnhancement;
+            PickAmmoFromSpeicalChest = pickAmmoFromSpeicalChest;
             EnableArmorEnhancement = enableArmorEnhancement;
             EnableAccessoryEnhancement = enableAccessoryEnhancement;
             EnableDecorationEnhancement = enableDecorationEnhancement;
             EnableCrossPagePickup = enableCrossPagePickup;
+            EnableCrosspageUseCoinsOrTokens= enableCrosspageUseCoinsOrTokens;
+            EnableModIntroduceCraft = enableModIntroduceCraft;
+            EnableScrollPage = enableScrollPage;
             PackageUI.Width = ForWidth;
             PackageUI.Height = ForHeight;
             PackageUI.HideAlways = hideuialways;
             base.OnChanged();
-
-            //改
-            EnableCrossPageStack = enableCrossPageStack;
         }
     }
 }

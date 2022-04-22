@@ -48,6 +48,7 @@ namespace LargerInventory
         internal List<Mod> BlackList = new();
         internal List<Mod> WhiteList = new();
         internal int index;
+        internal bool Deleted { get; set; } = false;
         internal void QuickStack()
         {
             if(Flag.ChangeAvailable)

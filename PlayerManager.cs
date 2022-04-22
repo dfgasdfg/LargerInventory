@@ -2,11 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent.Achievements;
+using Terraria.GameContent.UI;
 using Terraria.GameInput;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
@@ -208,9 +210,9 @@ namespace LargerInventory
                     Manager.Activing.SendMisc();
                 }
             }
-            if(KeyControl.keybinds.TryGetValue(KeyControl.SortAll,out ModKeybind sortall))
+            if (KeyControl.keybinds.TryGetValue(KeyControl.SortAll, out ModKeybind sortall))
             {
-                if(sortall.JustPressed)
+                if (sortall.JustPressed)
                 {
                     Page.QuickStackAll();
                 }
@@ -379,6 +381,65 @@ namespace LargerInventory
                 {
                     SetFavorite(9);
                     return;
+                }
+            }
+
+            if (Config.EnableScrollPage)
+            {
+                var player = Manager.Activing;
+                int next = -Math.Sign(PlayerInput.ScrollWheelDelta);
+                float invScale = 0.85f;
+                if (next != 0 && Player.mouseInterface)
+                {
+                    if (Main.mouseX > 20 && Main.mouseX < (int)(20f + 560f * invScale * Main.UIScale)
+                        && Main.mouseY > 20 && Main.mouseY < (int)(20f + 280f * invScale * Main.UIScale))
+                    {
+                        player.SaveInventory();
+                        player.NowInventoryIndex = Hooks.Wrap(0, player.pages.Count, player.NowInventoryIndex + next);
+                        player.SendInventory();
+                    }
+
+                    int OnePrivateValue = (int?)typeof(Main).GetField("mH", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null) ?? 256;//不知道哪里蹦出来的私有Main.mH 可能等于256
+                    int MagicalNumber = 174 + OnePrivateValue;
+                    int EquipCount = Player.GetAmountOfExtraAccessorySlotsToShow() + 8;
+                    if (Main.screenHeight < 950 && EquipCount >= 10)
+                    {
+                        MagicalNumber -= (int)(56f * invScale * (float)(EquipCount - 9));
+                    }
+                    float factor = 3f / EquipCount;
+                    float boundary = (1 - factor) * MagicalNumber + factor * (int)((float)MagicalNumber + 448f * invScale);
+                    if (Main.mouseX > Main.screenWidth - 64 - 28 && Main.mouseX < (int)((float)(Main.screenWidth - 64 - 28) + 56f * invScale))
+                    {
+                        if (Main.EquipPage == 0)
+                        {
+                            if (Main.mouseY > MagicalNumber && Main.mouseY < (int)((float)MagicalNumber + 448f * invScale))
+                            {
+                                if (Main.mouseY < boundary)
+                                {
+                                    player.SaveArmor();
+                                    player.NowArmorIndex = Hooks.Wrap(0, player.pages.Count, player.NowArmorIndex + next);
+                                    player.SendArmor();
+                                }
+                                else
+                                {
+                                    player.SaveAccessory();
+                                    player.NowAccessoryIndex = Hooks.Wrap(0, player.pages.Count, player.NowAccessoryIndex + next);
+                                    player.SendAccessory();
+                                }
+                            }
+                        }
+                        else if (Main.EquipPage == 2)
+                        {
+                            factor = 5f / EquipCount;
+                            float bottom = (1 - factor) * MagicalNumber + factor * (int)((float)MagicalNumber + 448f * invScale);
+                            if (Main.mouseY > MagicalNumber && Main.mouseY < bottom)
+                            {
+                                player.SaveMisc();
+                                player.NowMiscIndex = Hooks.Wrap(0, player.pages.Count, player.NowMiscIndex + next);
+                                player.SendMisc();
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -787,12 +848,12 @@ namespace LargerInventory
             {
                 player.setBonus += "\n" + "[" + Language.GetTextValue("ArmorSetBonus.Shroomite") + $"]*{Mushroom}";
                 player.shroomiteStealth = true;
-                if(Mushroom > 0)
+                if (Mushroom > 0)
                 {
                     player.GetDamage(DamageClass.Ranged) += (1 - player.stealth) * (Mushroom - 1) * 0.6f;
                     player.GetCritChance(DamageClass.Ranged) += (int)((1 - player.stealth) * (Mushroom - 1) * 10);
                     player.GetKnockback(DamageClass.Ranged) *= 1 + (1 - player.stealth) * (Mushroom - 1) * 0.5f;
-                    player.aggro -= (int)((1 - player.stealth)*(Mushroom - 1) * 750f);
+                    player.aggro -= (int)((1 - player.stealth) * (Mushroom - 1) * 750f);
                 }
             }
             //ok
@@ -1291,9 +1352,9 @@ namespace LargerInventory
             {
                 player.setVortex = true;
                 player.setBonus += "\n" + "[" + Language.GetTextValue("ArmorSetBonus.Vortex", Language.GetTextValue(Main.ReversedUpDownArmorSetBonuses ? "Key.UP" : "Key.DOWN")) + $"]{Vortex}";
-                if(Vortex>1)
+                if (Vortex > 1)
                 {
-                    if(player.setVortex)
+                    if (player.setVortex)
                     {
                         player.GetDamage(DamageClass.Ranged) += (1 - player.stealth) * (Vortex - 1) * 0.8f;
                         player.GetCritChance(DamageClass.Ranged) += (int)((1 - player.stealth) * (Vortex - 1) * 20f);
@@ -1438,8 +1499,9 @@ namespace LargerInventory
                         dic.Add(player.setBonus, 1);
                     }
                 }
+                player.setBonus = "";
             }
-            using(var keys=dic.Keys.GetEnumerator())
+            using (var keys = dic.Keys.GetEnumerator())
             {
                 while (keys.MoveNext())
                 {
@@ -1449,7 +1511,7 @@ namespace LargerInventory
             player.setBonus = bonus;
             #endregion
         }
-        internal static bool QuickBuff_ShouldBotherUsingThisBuff(Player player,int attemptedType)
+        internal static bool QuickBuff_ShouldBotherUsingThisBuff(Player player, int attemptedType)
         {
             bool result = true;
             for (int i = 0; i < Player.MaxBuffs; i++)
@@ -1534,13 +1596,13 @@ namespace LargerInventory
                 }
             }
             Item[] array = Manager.Activing.GetItemForQuickUse();
-            for(int i=0; i<array.Length; i++)
+            for (int i = 0; i < array.Length; i++)
             {
                 Item item2 = array[i];
-                if(!item2.IsAir)
+                if (!item2.IsAir)
                 {
                     int num3 = QuickBuff_FindFoodPriority(item2.buffType);
-                    if(num3>=num&&(item is null||item.buffTime<item2.buffTime||num3>num))
+                    if (num3 >= num && (item is null || item.buffTime < item2.buffTime || num3 > num))
                     {
                         item = item2;
                         num = num3;
@@ -1561,7 +1623,7 @@ namespace LargerInventory
                     {
                         legacySoundStyle = item.UseSound;
                         int num = item.buffTime;
-                        if (item.buffTime==0)
+                        if (item.buffTime == 0)
                         {
                             num = 3600;
                         }
@@ -1582,7 +1644,7 @@ namespace LargerInventory
                         for (int i = 0; i < array.Length; i++)
                         {
                             item2 = array[i];
-                            if (!(item2.stack <= 0 || item2.type <= ItemID.None || item2.buffType <= 0 || item2.DamageType==DamageClass.Summon))
+                            if (!(item2.stack <= 0 || item2.type <= ItemID.None || item2.buffType <= 0 || item2.DamageType == DamageClass.Summon))
                             {
                                 int num2 = item2.buffType;
                                 bool flag9 = CombinedHooks.CanUseItem(self, item2) && QuickBuff_ShouldBotherUsingThisBuff(self, num2);
@@ -1870,7 +1932,7 @@ namespace LargerInventory
             }
             else
             {
-                for(int i=0;i<58;i++)
+                for (int i = 0; i < 58; i++)
                 {
                     player.VanillaUpdateInventory(player.inventory[i]);
                 }
@@ -2158,6 +2220,45 @@ namespace LargerInventory
                     }
                 }
             }
+            if (Config.PickAmmoFromSpeicalChest)
+            {
+                for (int i = 0; i < 40; i++)
+                {
+                    if (self.bank.item[i].ammo == sItem.useAmmo && self.bank.item[i].stack > 0)
+                    {
+                        item = self.bank.item[i];
+                        canShoot = true;
+                        goto endselect;
+                    }
+                }
+                for (int i = 0; i < 40; i++)
+                {
+                    if (self.bank2.item[i].ammo == sItem.useAmmo && self.bank2.item[i].stack > 0)
+                    {
+                        item = self.bank2.item[i];
+                        canShoot = true;
+                        goto endselect;
+                    }
+                }
+                for (int i = 0; i < 40; i++)
+                {
+                    if (self.bank3.item[i].ammo == sItem.useAmmo && self.bank3.item[i].stack > 0)
+                    {
+                        item = self.bank3.item[i];
+                        canShoot = true;
+                        goto endselect;
+                    }
+                }
+                for (int i = 0; i < 40; i++)
+                {
+                    if (self.bank4.item[i].ammo == sItem.useAmmo && self.bank4.item[i].stack > 0)
+                    {
+                        item = self.bank4.item[i];
+                        canShoot = true;
+                        goto endselect;
+                    }
+                }
+            }
             canShoot = false;
             return;
         endselect:;
@@ -2387,6 +2488,547 @@ namespace LargerInventory
                 }
             }
         }
-
+        internal static bool Player_BuyItem(Player self, int price, int customCurrency)
+        {
+            if (customCurrency != -1)
+            {
+                return CustomCurrencyManager.BuyItem(self, price, customCurrency);
+            }
+            Item[] invs = Manager.Activing.GetItemForBuySell();
+            long num = Utils.CoinsCount(out bool flag, invs, Array.Empty<int>());
+            long num2 = Utils.CoinsCount(out flag, self.bank.item, Array.Empty<int>());
+            long num3 = Utils.CoinsCount(out flag, self.bank2.item, Array.Empty<int>());
+            long num4 = Utils.CoinsCount(out flag, self.bank3.item, Array.Empty<int>());
+            long num5 = Utils.CoinsCount(out flag, self.bank4.item, Array.Empty<int>());
+            if (Utils.CoinsCombineStacks(out flag, new long[]
+            {
+                num,
+                num2,
+                num3,
+                num4,
+                num5
+            }) < price)
+            {
+                return false;
+            }
+            List<Item[]> list = new();
+            Dictionary<int, List<int>> dictionary = new();
+            List<Point> list2 = new();
+            List<Point> list3 = new();
+            List<Point> list4 = new();
+            List<Point> list5 = new();
+            List<Point> list6 = new();
+            List<Point> list7 = new();
+            list.Add(invs);
+            list.Add(self.bank.item);
+            list.Add(self.bank2.item);
+            list.Add(self.bank3.item);
+            list.Add(self.bank4.item);
+            for (int i = 0; i < list.Count; i++)
+            {
+                dictionary.Add(i, new List<int>());
+            }
+            for (int j = 0; j < list.Count; j++)
+            {
+                for (int k = 0; k < list[j].Length; k++)
+                {
+                    if (!dictionary[j].Contains(k) && list[j][k].IsACoin)
+                    {
+                        list3.Add(new Point(j, k));
+                    }
+                }
+            }
+            int num6 = 0;
+            for (int l = list[num6].Length - 1; l >= 0; l--)
+            {
+                if (!dictionary[num6].Contains(l) && (list[num6][l].type == ItemID.None || list[num6][l].stack == 0))
+                {
+                    list2.Add(new Point(num6, l));
+                }
+            }
+            num6 = 1;
+            for (int m = list[num6].Length - 1; m >= 0; m--)
+            {
+                if (!dictionary[num6].Contains(m) && (list[num6][m].type == ItemID.None || list[num6][m].stack == 0))
+                {
+                    list4.Add(new Point(num6, m));
+                }
+            }
+            num6 = 2;
+            for (int n = list[num6].Length - 1; n >= 0; n--)
+            {
+                if (!dictionary[num6].Contains(n) && (list[num6][n].type == ItemID.None || list[num6][n].stack == 0))
+                {
+                    list5.Add(new Point(num6, n));
+                }
+            }
+            num6 = 3;
+            for (int num7 = list[num6].Length - 1; num7 >= 0; num7--)
+            {
+                if (!dictionary[num6].Contains(num7) && (list[num6][num7].type == ItemID.None || list[num6][num7].stack == 0))
+                {
+                    list6.Add(new Point(num6, num7));
+                }
+            }
+            num6 = 4;
+            for (int num8 = list[num6].Length - 1; num8 >= 0; num8--)
+            {
+                if (!dictionary[num6].Contains(num8) && (list[num6][num8].type == ItemID.None || list[num6][num8].stack == 0))
+                {
+                    list7.Add(new Point(num6, num8));
+                }
+            }
+            return !TryPurchasingCoins(price, list, list3, list2, list4, list5, list6, list7);
+        }
+        private static bool TryPurchasingCoins(int price, List<Item[]> inv, List<Point> slotCoins, List<Point> slotsEmpty, List<Point> slotEmptyBank, List<Point> slotEmptyBank2, List<Point> slotEmptyBank3, List<Point> slotEmptyBank4)
+        {
+            long num = price;
+            Dictionary<Point, Item> dictionary = new();
+            bool result = false;
+            while (num > 0L)
+            {
+                //dictionary.Clear();
+                long num2 = 1000000L;
+                for (int i = 0; i < 4; i++)
+                {
+                    if (num >= num2)
+                    {
+                        using (List<Point>.Enumerator enumerator = slotCoins.GetEnumerator())
+                        {
+                            while (enumerator.MoveNext())
+                            {
+                                Point current = enumerator.Current;
+                                if (inv[current.X][current.Y].type == 74 - i)
+                                {
+                                    long num3 = num / num2;
+                                    dictionary[current] = inv[current.X][current.Y].Clone();
+                                    //dictionary.Add(current, inv[current.X][current.Y].Clone());
+                                    if (num3 < inv[current.X][current.Y].stack)
+                                    {
+                                        inv[current.X][current.Y].stack -= (int)num3;
+                                    }
+                                    else
+                                    {
+                                        inv[current.X][current.Y].SetDefaults(0);
+                                        //slotsEmpty.Add(current);
+                                    }
+                                    num -= num2 * (long)(dictionary[current].stack - inv[current.X][current.Y].stack);
+                                }
+                            }
+                        }
+                    }
+                    num2 /= 100L;
+                }
+                if (num > 0L)
+                {
+                    if (slotsEmpty.Count <= 0)
+                    {
+                        using (Dictionary<Point, Item>.Enumerator enumerator2 = dictionary.GetEnumerator())
+                        {
+                            while (enumerator2.MoveNext())
+                            {
+                                KeyValuePair<Point, Item> current2 = enumerator2.Current;
+                                inv[current2.Key.X][current2.Key.Y] = current2.Value.Clone();
+                            }
+                        }
+                        result = true;
+                        break;
+                    }
+                    slotsEmpty.Sort(new Comparison<Point>(DelegateMethods.CompareYReverse));
+                    Point point = new(-1, -1);
+                    for (int j = 0; j < inv.Count; j++)
+                    {
+                        num2 = 10000L;
+                        for (int k = 0; k < 3; k++)
+                        {
+                            if (num >= num2)
+                            {
+                                using (List<Point>.Enumerator enumerator = slotCoins.GetEnumerator())
+                                {
+                                    while (enumerator.MoveNext())
+                                    {
+                                        Point current3 = enumerator.Current;
+                                        if (current3.X == j && inv[current3.X][current3.Y].type == 74 - k && inv[current3.X][current3.Y].stack >= 1)
+                                        {
+                                            List<Point> list = slotsEmpty;
+                                            if (j == 1 && slotEmptyBank.Count > 0)
+                                            {
+                                                list = slotEmptyBank;
+                                            }
+                                            if (j == 2 && slotEmptyBank2.Count > 0)
+                                            {
+                                                list = slotEmptyBank2;
+                                            }
+                                            if (j == 3 && slotEmptyBank3.Count > 0)
+                                            {
+                                                list = slotEmptyBank3;
+                                            }
+                                            if (j == 4 && slotEmptyBank4.Count > 0)
+                                            {
+                                                list = slotEmptyBank4;
+                                            }
+                                            Item expr_266 = inv[current3.X][current3.Y];
+                                            int num4 = expr_266.stack - 1;
+                                            expr_266.stack = num4;
+                                            if (num4 <= 0)
+                                            {
+                                                inv[current3.X][current3.Y].SetDefaults(0);
+                                                list.Add(current3);
+                                            }
+                                            dictionary.Add(list[0], inv[list[0].X][list[0].Y].Clone());
+                                            inv[list[0].X][list[0].Y].SetDefaults(73 - k);
+                                            inv[list[0].X][list[0].Y].stack = 100;
+                                            point = list[0];
+                                            list.RemoveAt(0);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            if (point.X != -1 || point.Y != -1)
+                            {
+                                break;
+                            }
+                            num2 /= 100L;
+                        }
+                        for (int l = 0; l < 2; l++)
+                        {
+                            if (point.X == -1 && point.Y == -1)
+                            {
+                                using (List<Point>.Enumerator enumerator = slotCoins.GetEnumerator())
+                                {
+                                    while (enumerator.MoveNext())
+                                    {
+                                        Point current4 = enumerator.Current;
+                                        if (current4.X == j && inv[current4.X][current4.Y].type == 73 + l && inv[current4.X][current4.Y].stack >= 1)
+                                        {
+                                            List<Point> list2 = slotsEmpty;
+                                            if (j == 1 && slotEmptyBank.Count > 0)
+                                            {
+                                                list2 = slotEmptyBank;
+                                            }
+                                            if (j == 2 && slotEmptyBank2.Count > 0)
+                                            {
+                                                list2 = slotEmptyBank2;
+                                            }
+                                            if (j == 3 && slotEmptyBank3.Count > 0)
+                                            {
+                                                list2 = slotEmptyBank3;
+                                            }
+                                            if (j == 4 && slotEmptyBank4.Count > 0)
+                                            {
+                                                list2 = slotEmptyBank4;
+                                            }
+                                            Item expr_46D = inv[current4.X][current4.Y];
+                                            int num4 = expr_46D.stack - 1;
+                                            expr_46D.stack = num4;
+                                            if (num4 <= 0)
+                                            {
+                                                inv[current4.X][current4.Y].SetDefaults(0);
+                                                list2.Add(current4);
+                                            }
+                                            dictionary.Add(list2[0], inv[list2[0].X][list2[0].Y].Clone());
+                                            inv[list2[0].X][list2[0].Y].SetDefaults(72 + l);
+                                            inv[list2[0].X][list2[0].Y].stack = 100;
+                                            point = list2[0];
+                                            list2.RemoveAt(0);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (point.X != -1 && point.Y != -1)
+                        {
+                            slotCoins.Add(point);
+                            break;
+                        }
+                    }
+                    slotsEmpty.Sort(new Comparison<Point>(DelegateMethods.CompareYReverse));
+                    slotEmptyBank.Sort(new Comparison<Point>(DelegateMethods.CompareYReverse));
+                    slotEmptyBank2.Sort(new Comparison<Point>(DelegateMethods.CompareYReverse));
+                    slotEmptyBank3.Sort(new Comparison<Point>(DelegateMethods.CompareYReverse));
+                    slotEmptyBank4.Sort(new Comparison<Point>(DelegateMethods.CompareYReverse));
+                }
+            }
+            return result;
+        }
+        internal static bool Player_BuyItem_Custom(Player player, int price, int currencyIndex)
+        {
+            var dictionary = (Dictionary<int, CustomCurrencySystem>)typeof(CustomCurrencyManager).GetField("_currencies", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance).GetValue(null);
+            if (dictionary is null || !dictionary.TryGetValue(currencyIndex, out CustomCurrencySystem customCurrencySystem))
+            {
+                return false;
+            }
+            Item[] invs = Manager.Activing.GetItemForBuySell();
+            long num = customCurrencySystem.CountCurrency(out bool flag, invs, Array.Empty<int>());
+            long num2 = customCurrencySystem.CountCurrency(out flag, player.bank.item, Array.Empty<int>());
+            long num3 = customCurrencySystem.CountCurrency(out flag, player.bank2.item, Array.Empty<int>());
+            long num4 = customCurrencySystem.CountCurrency(out flag, player.bank3.item, Array.Empty<int>());
+            long num5 = customCurrencySystem.CountCurrency(out flag, player.bank4.item, Array.Empty<int>());
+            if (customCurrencySystem.CombineStacks(out flag, new long[]
+            {
+                num,
+                num2,
+                num3,
+                num4,
+                num5
+            }) < price)
+            {
+                return false;
+            }
+            List<Item[]> list = new();
+            Dictionary<int, List<int>> dictionary2 = new();
+            List<Point> list2 = new();
+            List<Point> list3 = new();
+            List<Point> list4 = new();
+            List<Point> list5 = new();
+            List<Point> list6 = new();
+            List<Point> list7 = new();
+            list.Add(player.inventory);
+            list.Add(player.bank.item);
+            list.Add(player.bank2.item);
+            list.Add(player.bank3.item);
+            list.Add(player.bank4.item);
+            for (int i = 0; i < list.Count; i++)
+            {
+                dictionary2.Add(i, new List<int>());
+            }
+            for (int j = 0; j < list.Count; j++)
+            {
+                for (int k = 0; k < list[j].Length; k++)
+                {
+                    if (!dictionary2[j].Contains(k) && customCurrencySystem.Accepts(list[j][k]))
+                    {
+                        list3.Add(new Point(j, k));
+                    }
+                }
+            }
+            FindEmptySlots(list, dictionary2, list2, 0);
+            FindEmptySlots(list, dictionary2, list4, 1);
+            FindEmptySlots(list, dictionary2, list5, 2);
+            FindEmptySlots(list, dictionary2, list6, 3);
+            FindEmptySlots(list, dictionary2, list7, 4);
+            return customCurrencySystem.TryPurchasing(price, list, list3, list2, list4, list5, list6, list7);
+        }
+        private static void FindEmptySlots(List<Item[]> inventories, Dictionary<int, List<int>> slotsToIgnore, List<Point> emptySlots, int currentInventoryIndex)
+        {
+            for (int i = inventories[currentInventoryIndex].Length - 1; i >= 0; i--)
+            {
+                if (!slotsToIgnore[currentInventoryIndex].Contains(i) && (inventories[currentInventoryIndex][i].type == ItemID.None || inventories[currentInventoryIndex][i].stack == 0))
+                {
+                    emptySlots.Add(new Point(currentInventoryIndex, i));
+                }
+            }
+        }
+        internal static bool SellItem(Player player, Item item, int stack = -1)
+        {
+            player.GetItemExpectedPrice(item, out int num, out int num2);
+            if (num <= 0)
+            {
+                return false;
+            }
+            if (stack == -1)
+            {
+                stack = item.stack;
+            }
+            Item[] arrayorig;
+            List<Item> items = new();
+            foreach (Page p in Manager.Activing.pages)
+            {
+                items.AddRange(p.Inventory[0..58]);
+            }
+            arrayorig = items.ToArray();
+            Item[] array = new Item[arrayorig.Length];
+            for (int i = 0; i < array.Length; i++)
+            {
+                array[i] = arrayorig[i].Clone();
+            }
+            int j = num / 5;
+            if (j < 1)
+            {
+                j = 1;
+            }
+            int num3 = j;
+            j *= stack;
+            int amount = Main.shopSellbackHelper.GetAmount(item);
+            if (amount > 0)
+            {
+                j += (-num3 + num2) * Math.Min(amount, item.stack);
+            }
+            bool flag = false;
+            while (j >= 1000000)
+            {
+                if (flag)
+                {
+                    break;
+                }
+                int num4 = -1;
+                for (int k = 53; k >= 0; k--)
+                {
+                    if (num4 == -1 && (player.inventory[k].type == ItemID.None || player.inventory[k].stack == 0))
+                    {
+                        num4 = k;
+                    }
+                    while (player.inventory[k].type == ItemID.PlatinumCoin && player.inventory[k].stack < player.inventory[k].maxStack && j >= 1000000)
+                    {
+                        player.inventory[k].stack++;
+                        j -= 1000000;
+                        DoCoins(player.inventory[k]);
+                        if (player.inventory[k].stack == 0 && num4 == -1)
+                        {
+                            num4 = k;
+                        }
+                    }
+                }
+                if (j >= 1000000)
+                {
+                    if (num4 == -1)
+                    {
+                        flag = true;
+                    }
+                    else
+                    {
+                        player.inventory[num4].SetDefaults(74);
+                        j -= 1000000;
+                    }
+                }
+            }
+            while (j >= 10000)
+            {
+                if (flag)
+                {
+                    break;
+                }
+                int num5 = -1;
+                for (int l = 53; l >= 0; l--)
+                {
+                    if (num5 == -1 && (player.inventory[l].type == ItemID.None || player.inventory[l].stack == 0))
+                    {
+                        num5 = l;
+                    }
+                    while (player.inventory[l].type == ItemID.GoldCoin && player.inventory[l].stack < player.inventory[l].maxStack && j >= 10000)
+                    {
+                        player.inventory[l].stack++;
+                        j -= 10000;
+                        DoCoins(player.inventory[l]);
+                        if (player.inventory[l].stack == 0 && num5 == -1)
+                        {
+                            num5 = l;
+                        }
+                    }
+                }
+                if (j >= 10000)
+                {
+                    if (num5 == -1)
+                    {
+                        flag = true;
+                    }
+                    else
+                    {
+                        player.inventory[num5].SetDefaults(73);
+                        j -= 10000;
+                    }
+                }
+            }
+            while (j >= 100)
+            {
+                if (flag)
+                {
+                    break;
+                }
+                int num6 = -1;
+                for (int m = 53; m >= 0; m--)
+                {
+                    if (num6 == -1 && (player.inventory[m].type == ItemID.None || player.inventory[m].stack == 0))
+                    {
+                        num6 = m;
+                    }
+                    while (player.inventory[m].type == ItemID.SilverCoin && player.inventory[m].stack < player.inventory[m].maxStack && j >= 100)
+                    {
+                        player.inventory[m].stack++;
+                        j -= 100;
+                        DoCoins(player.inventory[m]);
+                        if (player.inventory[m].stack == 0 && num6 == -1)
+                        {
+                            num6 = m;
+                        }
+                    }
+                }
+                if (j >= 100)
+                {
+                    if (num6 == -1)
+                    {
+                        flag = true;
+                    }
+                    else
+                    {
+                        player.inventory[num6].SetDefaults(72);
+                        j -= 100;
+                    }
+                }
+            }
+            while (j >= 1 && !flag)
+            {
+                int num7 = -1;
+                for (int n = 53; n >= 0; n--)
+                {
+                    if (num7 == -1 && (player.inventory[n].type == ItemID.None || player.inventory[n].stack == 0))
+                    {
+                        num7 = n;
+                    }
+                    while (player.inventory[n].type == ItemID.CopperCoin && player.inventory[n].stack < player.inventory[n].maxStack && j >= 1)
+                    {
+                        player.inventory[n].stack++;
+                        j--;
+                        DoCoins(player.inventory[n]);
+                        if (player.inventory[n].stack == 0 && num7 == -1)
+                        {
+                            num7 = n;
+                        }
+                    }
+                }
+                if (j >= 1)
+                {
+                    if (num7 == -1)
+                    {
+                        flag = true;
+                    }
+                    else
+                    {
+                        player.inventory[num7].SetDefaults(71);
+                        j--;
+                    }
+                }
+            }
+            if (flag)
+            {
+                for (int num8 = 0; num8 < 58; num8++)
+                {
+                    player.inventory[num8] = array[num8].Clone();
+                }
+                return false;
+            }
+            return true;
+        }
+        internal static void DoCoins(Item item)
+        {
+            if (item.stack != 100 || (item.type != ItemID.CopperCoin && item.type != ItemID.SilverCoin && item.type != ItemID.GoldCoin))
+            {
+                return;
+            }
+            item.SetDefaults(item.type + 1);
+            foreach (Item item2 in Manager.Activing.GetItemForBuySell())
+            {
+                if (item2.IsSameAs(item) && item2 != item && item2.type == item.type && item2.stack < item2.maxStack)
+                {
+                    item2.stack++;
+                    item.SetDefaults(0);
+                    item.active = false;
+                    item.TurnToAir();
+                    DoCoins(item2);
+                }
+            }
+        }
     }
 }

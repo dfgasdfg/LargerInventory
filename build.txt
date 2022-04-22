@@ -1,7 +1,7 @@
 displayName = LargerInventory
 author = silvermoon
-version = 1.0.0.8
+version = 1.0.0.20
 hideCode = true
 hideResources = true
 includeSource = true
-buildIgnore = *.csproj, *.user, obj\*, bin\*, .vs\*, *.zip, *.7z, *.txt
+buildIgnore = *.csproj, *.user, obj\*, bin\*, .vs\*, *.rar, *.zip, *.7z

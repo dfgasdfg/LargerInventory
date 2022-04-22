@@ -177,44 +177,6 @@ namespace LargerInventory
                 }
             }
         }
-        //private static void LoadItem(Item item, BinaryReader reader, TagCompound tag)
-        //{
-        //    if (reader.ReadBoolean())
-        //    {
-        //        item = new Item(reader.ReadInt32());
-        //        //item.SetDefaults();
-        //    }
-        //    else
-        //    {
-        //        if (ModContent.TryFind(reader.ReadString(), out ModItem modItem))
-        //        {
-        //            item = new Item(modItem.Type);
-        //        }
-        //        else
-        //        {
-        //            item = new Item(ModContent.ItemType<UnloadedItem>());
-        //        }
-        //    }
-
-        //    if (reader.ReadBoolean())
-        //    {
-        //        item.Prefix(reader.ReadInt32());
-        //    }
-        //    else
-        //    {
-        //        if (ModContent.TryFind(reader.ReadString(), out ModPrefix modPrefix))
-        //        {
-        //            item.Prefix(modPrefix.Type);
-        //        }
-        //    }
-        //    item.stack = reader.ReadInt32();
-        //    if (item.stack > item.maxStack)
-        //    {
-        //        item.stack = item.maxStack;
-        //    }
-        //    item.favorited = reader.ReadBoolean();
-        //    item.ModItem?.LoadData(tag);
-        //}
         public static void LoadItem(ref Item item, BinaryReader reader)
         {
             int id = reader.ReadInt32();

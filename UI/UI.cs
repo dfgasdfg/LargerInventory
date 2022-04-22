@@ -12,7 +12,7 @@ using Terraria.ModLoader.Config;
 using Terraria.UI;
 using Terraria.UI.Chat;
 
-namespace LargerInventory
+namespace LargerInventory.UI
 {
     class MultibackpackSystem : ModSystem
     {

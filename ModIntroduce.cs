@@ -54,7 +54,7 @@ namespace LargerInventory
         public override void AddRecipes()
         {
             CreateRecipe()
-                .AddCondition(NetworkText.Empty, new Predicate<Recipe>((r) => !Main.LocalPlayer.HasItem(Item.type)))
+                .AddCondition(NetworkText.Empty, new Predicate<Recipe>((r) => !Main.LocalPlayer.HasItem(Item.type) && Config.EnableModIntroduceCraft))
                 .Register();
             base.AddRecipes();
         }

@@ -52,6 +52,7 @@ namespace LargerInventory
             keybinds.Add(Favorites[7], KeybindLoader.RegisterKeybind(mod, Favorites[7], Microsoft.Xna.Framework.Input.Keys.NumPad7));
             keybinds.Add(Favorites[8], KeybindLoader.RegisterKeybind(mod, Favorites[8], Microsoft.Xna.Framework.Input.Keys.NumPad8));
             keybinds.Add(Favorites[9], KeybindLoader.RegisterKeybind(mod, Favorites[9], Microsoft.Xna.Framework.Input.Keys.NumPad9));
+            
         }
         internal static void Unload()
         {
