@@ -420,7 +420,7 @@ namespace LargerInventory
                         num9 = 4f / num9;
                         num7 *= num9;
                         num8 *= num9;
-                        Terraria.Projectile.NewProjectile(self.GetProjectileSource_OnHit(victim, 16), Position.X, Position.Y, num7, num8, 356, num * PlayerManager.GhostHurt, 0f, self.owner, num6, 0f);
+                        Terraria.Projectile.NewProjectile(self.GetSource_OnHit(victim), Position.X, Position.Y, num7, num8, 356, num * PlayerManager.GhostHurt, 0f, self.owner, num6, 0f);
                     }
                 }
                 catch (Exception e)
@@ -466,7 +466,7 @@ namespace LargerInventory
                             num4 = i;
                         }
                     }
-                    Terraria.Projectile.NewProjectile(self.GetProjectileSource_OnHit(victim, 15), Position.X, Position.Y, 0f, 0f, 298, 0, 0f, self.owner, num4, num2 * PlayerManager.GhostHeal);
+                    Terraria.Projectile.NewProjectile(self.GetSource_OnHit(victim), Position.X, Position.Y, 0f, 0f, 298, 0, 0f, self.owner, num4, num2 * PlayerManager.GhostHeal);
                 }
                 catch (Exception e)
                 {

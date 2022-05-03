@@ -1,6 +1,6 @@
 displayName = LargerInventory
 author = silvermoon
-version = 1.0.0.20
+version = 1.0.0.21
 hideCode = true
 hideResources = true
 includeSource = true

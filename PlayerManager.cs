@@ -1171,7 +1171,7 @@ namespace LargerInventory
             if (CobaltMelee > 0)
             {
                 player.setBonus += "\n" + "[" + Language.GetTextValue("ArmorSetBonus.CobaltMelee") + $"]*{CobaltMelee}";
-                player.meleeSpeed += 0.15f * CobaltMelee;
+                player.GetAttackSpeed(DamageClass.Melee) += 0.15f * CobaltMelee;
             }
             //无可叠加效果
             if (CobaltRanged > 0)
@@ -1207,7 +1207,7 @@ namespace LargerInventory
             if (AdamantiteMelee > 0)
             {
                 player.setBonus += "\n" + Language.GetTextValue("ArmorSetBonus.AdamantiteMelee");
-                player.meleeSpeed += 0.2f;
+                player.GetAttackSpeed(DamageClass.Melee) += 0.2f;
                 player.moveSpeed += 0.2f;
             }
             //无可叠加效果
@@ -1390,7 +1390,7 @@ namespace LargerInventory
                     }
                     if (player.ownedProjectileCounts[623] < 1)
                     {
-                        Main.projectile[Projectile.NewProjectile(player.GetProjectileSource_SetBonus(7),
+                        Main.projectile[Projectile.NewProjectile(player.GetSource_GiftOrReward(),
                             player.Center.X,
                             player.Center.Y,
                             0,
@@ -1478,7 +1478,8 @@ namespace LargerInventory
                 player.setBonus += "\n" + "[" + Language.GetTextValue("ArmorSetBonus.ObsidianOutlaw") + $"]*{ObsidianOutlaw}";
                 player.GetDamage(DamageClass.Summon) += 0.15f * ObsidianOutlaw;
                 player.whipRangeMultiplier += 0.5f * ObsidianOutlaw;
-                player.whipUseTimeMultiplier *= 1f / (1.35f * ObsidianOutlaw);
+                //player.whipUseTimeMultiplier *= 1f / (1.35f * ObsidianOutlaw);
+                player.GetAttackSpeed(DamageClass.SummonMeleeSpeed) *= 1f / (1.35f * ObsidianOutlaw);
             }
             //ok
             player.ApplyArmorSoundAndDustChanges();
@@ -2008,11 +2009,13 @@ namespace LargerInventory
             {
                 player.lifeRegen += 2;
                 player.statDefense += 4;
-                player.meleeSpeed += 0.1f;
+                //player.meleeSpeed += 0.1f;
+                player.GetAttackSpeed(DamageClass.Melee) += 0.1f;
                 player.GetDamage(DamageClass.Generic) += 0.1f;
                 player.GetCritChance(DamageClass.Generic) += 2;
                 player.pickSpeed -= 0.15f;
-                player.minionKB += 0.5f;
+                //player.minionKB += 0.5f;
+                player.GetKnockback(DamageClass.Summon) += 0.5f;
             }
             if (player.dd2Accessory)
             {
