@@ -384,64 +384,6 @@ namespace LargerInventory
                 }
             }
 
-            if (Config.EnableScrollPage)
-            {
-                var player = Manager.Activing;
-                int next = -Math.Sign(PlayerInput.ScrollWheelDelta);
-                float invScale = 0.85f;
-                if (next != 0 && Player.mouseInterface)
-                {
-                    if (Main.mouseX > 20 && Main.mouseX < (int)(20f + 560f * invScale * Main.UIScale)
-                        && Main.mouseY > 20 && Main.mouseY < (int)(20f + 280f * invScale * Main.UIScale))
-                    {
-                        player.SaveInventory();
-                        player.NowInventoryIndex = Hooks.Wrap(0, player.pages.Count, player.NowInventoryIndex + next);
-                        player.SendInventory();
-                    }
-
-                    int OnePrivateValue = (int?)typeof(Main).GetField("mH", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null) ?? 256;//不知道哪里蹦出来的私有Main.mH 可能等于256
-                    int MagicalNumber = 174 + OnePrivateValue;
-                    int EquipCount = Player.GetAmountOfExtraAccessorySlotsToShow() + 8;
-                    if (Main.screenHeight < 950 && EquipCount >= 10)
-                    {
-                        MagicalNumber -= (int)(56f * invScale * (float)(EquipCount - 9));
-                    }
-                    float factor = 3f / EquipCount;
-                    float boundary = (1 - factor) * MagicalNumber + factor * (int)((float)MagicalNumber + 448f * invScale);
-                    if (Main.mouseX > Main.screenWidth - 64 - 28 && Main.mouseX < (int)((float)(Main.screenWidth - 64 - 28) + 56f * invScale))
-                    {
-                        if (Main.EquipPage == 0)
-                        {
-                            if (Main.mouseY > MagicalNumber && Main.mouseY < (int)((float)MagicalNumber + 448f * invScale))
-                            {
-                                if (Main.mouseY < boundary)
-                                {
-                                    player.SaveArmor();
-                                    player.NowArmorIndex = Hooks.Wrap(0, player.pages.Count, player.NowArmorIndex + next);
-                                    player.SendArmor();
-                                }
-                                else
-                                {
-                                    player.SaveAccessory();
-                                    player.NowAccessoryIndex = Hooks.Wrap(0, player.pages.Count, player.NowAccessoryIndex + next);
-                                    player.SendAccessory();
-                                }
-                            }
-                        }
-                        else if (Main.EquipPage == 2)
-                        {
-                            factor = 5f / EquipCount;
-                            float bottom = (1 - factor) * MagicalNumber + factor * (int)((float)MagicalNumber + 448f * invScale);
-                            if (Main.mouseY > MagicalNumber && Main.mouseY < bottom)
-                            {
-                                player.SaveMisc();
-                                player.NowMiscIndex = Hooks.Wrap(0, player.pages.Count, player.NowMiscIndex + next);
-                                player.SendMisc();
-                            }
-                        }
-                    }
-                }
-            }
         }
         internal static void SaveFavorite(int index)
         {

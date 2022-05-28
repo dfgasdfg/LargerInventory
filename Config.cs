@@ -102,7 +102,7 @@ namespace LargerInventory
         [Tooltip("$Mods.LargerInventory.ConfigTooltip.EnableRecipeEnhancement")]
         public bool enableRecipeEnhancement;
 
-        [DefaultValue(true)]
+        [DefaultValue(false)]
         [BackgroundColor(65, 179, 73)]
         [Label("$Mods.LargerInventory.ConfigLabel.IgnoreFavouritesWhenCraftingItems")]
         [Tooltip("$Mods.LargerInventory.ConfigTooltip.IgnoreFavouritesWhenCraftingItems")]
@@ -114,7 +114,7 @@ namespace LargerInventory
         [Tooltip("$Mods.LargerInventory.ConfigTooltip.EnableQuickUse")]
         public bool enableQuickUse;
 
-        [DefaultValue(true)]
+        [DefaultValue(false)]
         [BackgroundColor(65, 179, 73)]
         [Label("$Mods.LargerInventory.ConfigLabel.IgnoreFavouritesWhenQuickUseItems")]
         [Tooltip("$Mods.LargerInventory.ConfigTooltip.IgnoreFavouritesWhenQuickUseItems")]
@@ -156,13 +156,13 @@ namespace LargerInventory
         [Tooltip("$Mods.LargerInventory.ConfigTooltip.EnableDecorationEnhancement")]
         public bool enableDecorationEnhancement;
 
-        [DefaultValue(false)]
+        [DefaultValue(true)]
         [BackgroundColor(65, 179, 73)]
         [Label("$Mods.LargerInventory.ConfigLabel.EnableCrossPagePickup")]
         [Tooltip("$Mods.LargerInventory.ConfigTooltip.EnableCrossPagePickup")]
         public bool enableCrossPagePickup;
 
-        [DefaultValue(false)]
+        [DefaultValue(true)]
         [BackgroundColor(65, 179, 73)]
         [Label("$Mods.LargerInventory.ConfigLabel.EnableCrosspageUseCoinsOrTokens")]
         [Tooltip("$Mods.LargerInventory.ConfigTooltip.EnableCrosspageUseCoinsOrTokens")]
