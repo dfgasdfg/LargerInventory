@@ -1558,7 +1558,7 @@ namespace LargerInventory
         {
             if (!(self.cursed || self.CCed || self.dead))
             {
-                LegacySoundStyle legacySoundStyle = null;
+                SoundStyle? legacySoundStyle = null;
                 if (self.CountBuffs() < Player.MaxBuffs)
                 {
                     Item item = QuickBuff_PickBestFoodItem(self);
@@ -1650,9 +1650,9 @@ namespace LargerInventory
                             }
                         }
                     }
-                    if (legacySoundStyle is not null)
+                    if (legacySoundStyle != null)
                     {
-                        SoundEngine.PlaySound(legacySoundStyle, self.position);
+                        SoundEngine.PlaySound(legacySoundStyle.Value, self.position);
                         Recipe.FindRecipes(false);
                     }
                 }
@@ -1674,7 +1674,7 @@ namespace LargerInventory
                 }
                 return;
             mark:;
-                SoundEngine.PlaySound(willuse.UseSound, self.position);
+                SoundEngine.PlaySound(willuse.UseSound.Value, self.position);
                 if (willuse.potion)
                 {
                     if (willuse.type == ItemID.RestorationPotion)
@@ -1740,7 +1740,7 @@ namespace LargerInventory
                 Item item = self.QuickHeal_GetItemToUse();
                 if (item is not null)
                 {
-                    SoundEngine.PlaySound(item.UseSound, self.position);
+                    SoundEngine.PlaySound(item.UseSound.Value, self.position);
                     if (item.potion)
                     {
                         if (item.type == ItemID.RestorationPotion)
@@ -2340,7 +2340,8 @@ namespace LargerInventory
                 }
             }
             knockBack += item.knockBack;
-            ItemLoader.PickAmmo(sItem, item, self, ref projToShoot, ref speed, ref damage, ref knockBack);
+            var statMod = new StatModifier(damage, 1);
+            ItemLoader.PickAmmo(sItem, item, self, ref projToShoot, ref speed, ref statMod, ref knockBack);
             bool willcosume = dontConsume;
             if (sItem.type == ItemID.VortexBeater && Main.rand.Next(3) != 0)
             {

@@ -269,7 +269,7 @@ namespace LargerInventory
                         recipe = r
                     });
                     RecipeLoader.OnCraft(Main.mouseItem, r);
-                    SoundEngine.PlaySound(7, -1, -1, 1, 1f, 0f);
+                    SoundEngine.PlaySound(SoundID.Grab);
                 }
                 AchievementsHelper.NotifyItemCraft(r);
                 AchievementsHelper.NotifyItemPickup(Main.player[Main.myPlayer], r.createItem);
@@ -402,7 +402,7 @@ namespace LargerInventory
         {
             if (ItemID.Sets.NebulaPickup[itemToPickUp.type])
             {
-                SoundEngine.PlaySound(7, (int)player.position.X, (int)player.position.Y, 1, 1f, 0f);
+                SoundEngine.PlaySound(SoundID.Grab, new Microsoft.Xna.Framework.Vector2(player.position.X, player.position.Y));                
                 int num = itemToPickUp.buffType;
                 Main.item[itemToPickUp.whoAmI] = new();
                 if (Main.netMode == NetmodeID.MultiplayerClient)
@@ -416,13 +416,13 @@ namespace LargerInventory
             }
             if (itemToPickUp.type == ItemID.Heart || itemToPickUp.type == ItemID.CandyApple || itemToPickUp.type == ItemID.CandyCane)
             {
-                SoundEngine.PlaySound(7, (int)player.position.X, (int)player.position.Y, 1, 1f, 0f);
+                SoundEngine.PlaySound(SoundID.Grab, new Microsoft.Xna.Framework.Vector2(player.position.X, player.position.Y));
                 player.Heal(20);
                 Main.item[itemToPickUp.whoAmI] = new();
             }
             else if (itemToPickUp.type == ItemID.Star || itemToPickUp.type == ItemID.SoulCake || itemToPickUp.type == ItemID.SugarPlum)
             {
-                SoundEngine.PlaySound(7, (int)player.position.X, (int)player.position.Y, 1, 1f, 0f);
+                SoundEngine.PlaySound(SoundID.Grab, new Microsoft.Xna.Framework.Vector2(player.position.X, player.position.Y));
                 player.statMana += 100;
                 if (Main.myPlayer == player.whoAmI)
                 {
@@ -436,7 +436,7 @@ namespace LargerInventory
             }
             else if (itemToPickUp.type == 4143)
             {
-                SoundEngine.PlaySound(7, (int)player.position.X, (int)player.position.Y, 1, 1f, 0f);
+                SoundEngine.PlaySound(SoundID.Grab, new Microsoft.Xna.Framework.Vector2(player.position.X, player.position.Y));
                 player.statMana += 50;
                 if (Main.myPlayer == player.whoAmI)
                 {
