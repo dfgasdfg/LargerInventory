@@ -29,12 +29,12 @@ namespace LargerInventory
             On.Terraria.Player.UpdateEquips -= UpdateEquips_Replace;
             //On.Terraria.Player.GrabItems -= GrabItems_Replace;
             On.Terraria.Player.GetItem += Player_GetItem;
-            On.Terraria.Player.PickAmmo -= PickAmmo_Replace;
+            On.Terraria.Player.PickAmmo_Item_refInt32_refSingle_refBoolean_refInt32_refSingle_refInt32_bool -= PickAmmo_Replace;
             On.Terraria.Player.BuyItem -= Player_BuyItem_Replace;
             On.Terraria.GameContent.UI.CustomCurrencyManager.BuyItem -= CustomCurrencyManager_BuyItem_Replace;
             On.Terraria.Player.SellItem -= Player_SellItem_Replace;
             On.Terraria.Player.DoCoins -= Player_DoCoins_Replace;
-            On.Terraria.Player.HasAmmo -= Player_HasAmmo_Replace;
+            On.Terraria.Player.HasAmmo_Item_bool -= Player_HasAmmo_Replace;
             Flag.UnloadingHooks = false;
         }
         internal static void Load()
@@ -57,15 +57,16 @@ namespace LargerInventory
             On.Terraria.Player.UpdateEquips += UpdateEquips_Replace;
             //On.Terraria.Player.GrabItems += GrabItems_Replace;
             On.Terraria.Player.GetItem += Player_GetItem;
-            On.Terraria.Player.PickAmmo += PickAmmo_Replace;
+            On.Terraria.Player.PickAmmo_Item_refInt32_refSingle_refBoolean_refInt32_refSingle_refInt32_bool += PickAmmo_Replace;
             On.Terraria.Player.BuyItem += Player_BuyItem_Replace;
             On.Terraria.GameContent.UI.CustomCurrencyManager.BuyItem += CustomCurrencyManager_BuyItem_Replace;
             On.Terraria.Player.SellItem += Player_SellItem_Replace;
             On.Terraria.Player.DoCoins += Player_DoCoins_Replace;
-            On.Terraria.Player.HasAmmo += Player_HasAmmo_Replace;
+            On.Terraria.Player.HasAmmo_Item_bool += Player_HasAmmo_Replace;
             Flag.LoadingHooks = false;
         }
-        private static bool Player_HasAmmo_Replace(On.Terraria.Player.orig_HasAmmo orig, Terraria.Player self, Terraria.Item sItem, bool canUse)
+
+        private static bool Player_HasAmmo_Replace(On.Terraria.Player.orig_HasAmmo_Item_bool orig, Terraria.Player self, Terraria.Item sItem, bool canUse)
         {
             if (Flag.ChangeAvailable && Config.EnableAmmoPickEnhancement && Config.PickAmmoFromSpeicalChest)
             {
@@ -173,7 +174,7 @@ namespace LargerInventory
                 return orig.Invoke(self, price, customCurrency);
             }
         }
-        private static void PickAmmo_Replace(On.Terraria.Player.orig_PickAmmo orig, Terraria.Player self, Terraria.Item sItem, ref int projToShoot, ref float speed, ref bool canShoot, ref int Damage, ref float KnockBack, out int usedAmmoItemId, bool dontConsume)
+        private static void PickAmmo_Replace(On.Terraria.Player.orig_PickAmmo_Item_refInt32_refSingle_refBoolean_refInt32_refSingle_refInt32_bool orig, Terraria.Player self, Terraria.Item sItem, ref int projToShoot, ref float speed, ref bool canShoot, ref int Damage, ref float KnockBack, out int usedAmmoItemId, bool dontConsume)
         {
             if (Flag.ChangeAvailable && Config.EnableAmmoPickEnhancement)
             {

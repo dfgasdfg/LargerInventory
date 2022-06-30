@@ -11,6 +11,7 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.Config;
 using Terraria.UI;
 using Terraria.UI.Chat;
+using Terraria.ID;
 
 namespace LargerInventory.UI
 {
@@ -70,7 +71,6 @@ namespace LargerInventory.UI
     class MultibackpackPlayer : ModPlayer
     {
         public bool CantUse = false;
-        public override bool CloneNewInstances => false;
         public override void ResetEffects()
         {
             if (Main.playerInventory && Main.LocalPlayer.chest == -1 && Main.LocalPlayer.talkNPC == -1)
@@ -108,7 +108,7 @@ namespace LargerInventory.UI
                 
                 if (!Sound)
                 {
-                    SoundEngine.PlaySound(12, -1, -1, 1, 1f, 0f);
+                    SoundEngine.PlaySound(SoundID.MenuTick);
                     Sound = true;
                 }
                 ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.MouseText.Value, Language.GetTextValue("Mods.LargerInventory.Common.3"),
@@ -116,25 +116,25 @@ namespace LargerInventory.UI
                 colorstar = Color.White;
                 if (Main.mouseLeft && Main.mouseLeftRelease)
                 {
-                    SoundEngine.PlaySound(10, -1, -1, 1, 1f, 0f);
+                    SoundEngine.PlaySound(SoundID.MenuOpen);
                     //收藏
                 }
             }
             spriteBatch.Draw(texturestar, Barstar, barstar, colorstar, 0f, Vector2.Zero, SpriteEffects.None, 0f);*/
+            var widthX = 73;
+            var heightY = 265;
             int num = Manager.Activing.NowInventoryIndex + 1;
-            DynamicSpriteFont dynamicSpriteFont = FontAssets.MouseText.Value;
-            Vector2 vector2 = dynamicSpriteFont.MeasureString($"{num}") * 1.1f;
-            float width = vector2.X / 2f;
-            Vector2 vector = new Vector2((int)(Main.screenWidth * (Width + 0.03f) - width) + 30, (int)(Main.screenHeight * Height));
+            Vector2 vector = new Vector2((int)(widthX+181), (int)(heightY));
             ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.MouseText.Value, $"{num}",
             vector, Color.White, 0f, Vector2.Zero, new Vector2(1.1f));
 
             Texture2D texture01 = ModContent.Request<Texture2D>("LargerInventory/UI/PackButton01").Value;
             Texture2D texture02 = ModContent.Request<Texture2D>("LargerInventory/UI/PackButton02").Value;
-            Rectangle Bar011 = new Rectangle((int)(Main.screenWidth * Width), (int)(Main.screenHeight * Height), 32, 28);
-            Rectangle Bar012 = new Rectangle((int)(Main.screenWidth * Width) + 42, (int)(Main.screenHeight * Height), 18, 28);
-            Rectangle Bar021 = new Rectangle((int)(Main.screenWidth * (Width + 0.06f)), (int)(Main.screenHeight * Height), 18, 28);
-            Rectangle Bar022 = new Rectangle((int)(Main.screenWidth * (Width + 0.06f)) + 28, (int)(Main.screenHeight * Height), 32, 28);
+            
+            Rectangle Bar011 = new Rectangle((int)(widthX+96), (int)(heightY), 32, 28);
+            Rectangle Bar012 = new Rectangle((int)(widthX) + 138, (int)(heightY), 18, 28);
+            Rectangle Bar021 = new Rectangle((int)(widthX + 211), (int)(heightY), 18, 28);
+            Rectangle Bar022 = new Rectangle((int)(widthX + 239), (int)(heightY), 32, 28);
             Color color01 = new Color(75, 75, 75, 75);
             Color color02 = new Color(75, 75, 75, 75);
             Color color03 = new Color(75, 75, 75, 75);
@@ -144,11 +144,10 @@ namespace LargerInventory.UI
             Rectangle Bar03 = new Rectangle(0, 0, 18, 28);
             Rectangle Bar04 = new Rectangle(28, 0, 32, 28);
 
-
             Texture2D texture03 = ModContent.Request<Texture2D>("LargerInventory/UI/QuickStack01").Value;
             Texture2D texture04 = ModContent.Request<Texture2D>("LargerInventory/UI/QuickStack1").Value;
-            Rectangle Bar003 = new Rectangle((int)(Main.screenWidth * (Width - 0.05f)), (int)(Main.screenHeight * Height) - 1, 32, 30);
-            Rectangle Bar004 = new Rectangle((int)(Main.screenWidth * (Width - 0.025f)), (int)(Main.screenHeight * Height) - 1, 32, 30);
+            Rectangle Bar003 = new Rectangle((int)(widthX), (int)(heightY) - 1, 32, 30);
+            Rectangle Bar004 = new Rectangle((int)(widthX +40), (int)(heightY) - 1, 32, 30);
             Rectangle bar = new Rectangle(0, 0, 32, 30);
             if (Bar012.Contains(Main.MouseScreen.ToPoint()))
             {
@@ -158,13 +157,13 @@ namespace LargerInventory.UI
                     Main.LocalPlayer.mouseInterface = true;
                     if (!Sound)
                     {
-                        SoundEngine.PlaySound(12, -1, -1, 1, 1f, 0f);
+                        SoundEngine.PlaySound(SoundID.MenuTick);
                         Sound = true;
                     }
                     color02 = Color.White;
                     if (Main.mouseLeft && Main.mouseLeftRelease)
                     {
-                        SoundEngine.PlaySound(10, -1, -1, 1, 1f, 0f);
+                        SoundEngine.PlaySound(SoundID.MenuOpen);
                         Manager.Activing.SaveInventory();
                         Manager.Activing.NowInventoryIndex--;
                         Manager.Activing.SendInventory();
@@ -179,13 +178,13 @@ namespace LargerInventory.UI
                     Main.LocalPlayer.mouseInterface = true;
                     if (!Sound)
                     {
-                        SoundEngine.PlaySound(12, -1, -1, 1, 1f, 0f);
+                        SoundEngine.PlaySound(SoundID.MenuTick);
                         Sound = true;
                     }
                     color03 = Color.White;
                     if (Main.mouseLeft && Main.mouseLeftRelease)
                     {
-                        SoundEngine.PlaySound(10, -1, -1, 1, 1f, 0f);
+                        SoundEngine.PlaySound(SoundID.MenuOpen);
                         Manager.Activing.SaveInventory();
                         Manager.Activing.NowInventoryIndex++;
                         Manager.Activing.SendInventory();
@@ -200,13 +199,13 @@ namespace LargerInventory.UI
                     Main.LocalPlayer.mouseInterface = true;
                     if (!Sound)
                     {
-                        SoundEngine.PlaySound(12, -1, -1, 1, 1f, 0f);
+                        SoundEngine.PlaySound(SoundID.MenuTick);
                         Sound = true;
                     }
                     color01 = Color.White;
                     if (Main.mouseLeft && Main.mouseLeftRelease)
                     {
-                        SoundEngine.PlaySound(10, -1, -1, 1, 1f, 0f);
+                        SoundEngine.PlaySound(SoundID.MenuOpen);
                         Manager.Activing.SaveInventory();
                         Manager.Activing.NowInventoryIndex = 0;
                         Manager.Activing.SendInventory();
@@ -221,13 +220,13 @@ namespace LargerInventory.UI
                     Main.LocalPlayer.mouseInterface = true;
                     if (!Sound)
                     {
-                        SoundEngine.PlaySound(12, -1, -1, 1, 1f, 0f);
+                        SoundEngine.PlaySound(SoundID.MenuTick);
                         Sound = true;
                     }
                     color04 = Color.White;
                     if (Main.mouseLeft && Main.mouseLeftRelease)
                     {
-                        SoundEngine.PlaySound(10, -1, -1, 1, 1f, 0f);
+                        SoundEngine.PlaySound(SoundID.MenuOpen);
                         Manager.Activing.SaveInventory();
                         Manager.Activing.NowInventoryIndex = int.MaxValue;
                         Manager.Activing.SendInventory();
@@ -240,7 +239,7 @@ namespace LargerInventory.UI
                 Main.LocalPlayer.mouseInterface = true;
                 if (!Sound)
                 {
-                    SoundEngine.PlaySound(12, -1, -1, 1, 1f, 0f);
+                    SoundEngine.PlaySound(SoundID.MenuTick);
                     Sound = true;
                 }
                 texture03 = ModContent.Request<Texture2D>("LargerInventory/UI/QuickStack02").Value;
@@ -248,7 +247,7 @@ namespace LargerInventory.UI
                 new Vector2(Main.mouseX + 16f, Main.mouseY + 10f), Color.White, 0f, Vector2.Zero, new Vector2(1f));
                 if (Main.mouseLeft && Main.mouseLeftRelease)
                 {
-                    SoundEngine.PlaySound(10, -1, -1, 1, 1f, 0f);
+                    SoundEngine.PlaySound(SoundID.MenuOpen);
                     Manager.Activing.pages[Manager.Activing.NowInventoryIndex].QuickStack();
                 }
             }
@@ -258,7 +257,7 @@ namespace LargerInventory.UI
                 Main.LocalPlayer.mouseInterface = true;
                 if (!Sound)
                 {
-                    SoundEngine.PlaySound(12, -1, -1, 1, 1f, 0f);
+                    SoundEngine.PlaySound(SoundID.MenuTick);
                     Sound = true;
                 }
                 texture04 = ModContent.Request<Texture2D>("LargerInventory/UI/QuickStack2").Value;
@@ -266,7 +265,7 @@ namespace LargerInventory.UI
                 new Vector2(Main.mouseX + 16f, Main.mouseY + 10f), Color.White, 0f, Vector2.Zero, new Vector2(1f));
                 if (Main.mouseLeft && Main.mouseLeftRelease)
                 {
-                    SoundEngine.PlaySound(10, -1, -1, 1, 1f, 0f);
+                    SoundEngine.PlaySound(SoundID.MenuOpen);
                     Page.QuickStackAll();
                 }
             }
@@ -275,7 +274,7 @@ namespace LargerInventory.UI
                 Main.LocalPlayer.creativeInterface = false;
                 if (Sound)
                 {
-                    SoundEngine.PlaySound(12, -1, -1, 1, 1f, 0f);
+                    SoundEngine.PlaySound(SoundID.MenuTick);
                     Sound = false;
                 }
             }
